@@ -1,17 +1,33 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 // random comment
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+    implements MainPageFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (findViewById(R.id.fragment_container) != null) {
+            if(savedInstanceState != null) {
+                return;
+            }
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            MainPageFragment mpFragment = new MainPageFragment();
+            fragmentTransaction.add(R.id.fragment_container, mpFragment);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
@@ -31,5 +47,9 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onFragmentInteraction(Uri uri) {
+        // do nothing
     }
 }
