@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.LinkedList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +51,7 @@ public class MainPageFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     public MainPageFragment() {
         // Required empty public constructor
     }
@@ -67,17 +70,29 @@ public class MainPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_main_page, container, false);
 
+        LinkedList<String> matchupList = new LinkedList<String>();
 
         final LinearLayout mLinearLayout = (LinearLayout) v.findViewById(R.id.main_page_linear);
 
-        ImageView teamOneImage = (ImageView) mLinearLayout.findViewById(R.id.team1);
-        ImageView teamTwoImage = (ImageView) mLinearLayout.findViewById(R.id.team2);
+        displayNextMatches(mLinearLayout, 1);
+
+        // Inflate the layout for this fragment
+        return v;
+    }
+
+    public void displayNextMatches(LinearLayout linearLayout, int n) {
+
+        ImageView teamOneImage = new ImageView(getActivity());
+        ImageView teamTwoImage = new ImageView(getActivity());
+
+        teamOneImage.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f));
+        teamTwoImage.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f));
 
         teamOneImage.setImageResource(R.drawable.lmq_logo_hdpi);
         teamTwoImage.setImageResource(R.drawable.cloud9_logo_hdpi);
 
-        // Inflate the layout for this fragment
-        return v;
+        linearLayout.addView(teamOneImage);
+        linearLayout.addView(teamTwoImage);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
