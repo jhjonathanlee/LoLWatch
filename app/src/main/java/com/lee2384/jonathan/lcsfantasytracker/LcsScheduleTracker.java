@@ -1,22 +1,34 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
+import org.json.JSONObject;
+
+import java.sql.Date;
+
 /**
  * Created by Jonathan on 7/5/2014.
  */
 public class LcsScheduleTracker implements SportsScheduleTracker {
 
+    public LcsScheduleTracker(Date start, Date end) {
+        setUp();
+    }
+
+    private JSONObject setUp() {
+        return null;
+    }
+
     // return the season's schedule
-    public void returnSchedule(){
+    public void getSchedule(){
 
     }
 
     // returns the latest game
-    public void returnLatest(){
+    public void getLatest(){
 
     }
 
     // returns the upcoming game
-    public void returnNext(){
+    public void getNext(){
 
     }
 

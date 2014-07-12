@@ -6,13 +6,13 @@ package com.lee2384.jonathan.lcsfantasytracker;
 public interface SportsScheduleTracker {
 
     // return the season's schedule
-    public void returnSchedule();
+    public void getSchedule();
 
     // returns the latest game
-    public void returnLatest();
+    public void getLatest();
 
     // returns the upcoming game
-    public void returnNext();
+    public void getNext();
 
     // the sport this tracker is following
     public String getSport();
