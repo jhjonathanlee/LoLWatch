@@ -1,7 +1,11 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
 
@@ -74,13 +83,65 @@ public class MainPageFragment extends Fragment {
 
         final LinearLayout mLinearLayout = (LinearLayout) v.findViewById(R.id.main_page_linear);
 
-        displayNextMatches(mLinearLayout, 1);
+        displayNextMatches(mLinearLayout);
+
+        // get context
+        Context context = getActivity().getApplicationContext();
+
+        ConnectivityManager connMngr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected() ) {
+            final LinearLayout testL = (LinearLayout) v.findViewById(R.id.main_page_linear2);
+            new GetScheduleTask(testL).execute();
+
+        }
 
         // Inflate the layout for this fragment
         return v;
     }
 
-    public void displayNextMatches(LinearLayout linearLayout, int n) {
+    private class GetScheduleTask extends AsyncTask<Void, Void, JSONObject> {
+
+        private final String uri = "http://na.lolesports.com/api/schedule.json?tournamentId=102";
+
+        private final WeakReference<LinearLayout> linearLayoutReference;
+        //JSONObject jsonObject = null;
+
+        public GetScheduleTask(LinearLayout linearLayout) {
+            linearLayoutReference = new WeakReference<LinearLayout>(linearLayout);
+        }
+
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            JsonRetriever jsonRetriever = new JsonRetriever();
+            JSONObject jsonObject = jsonRetriever.getJsonFromUri(uri);
+            return jsonObject;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+
+            String matches;
+            JSONObject j;
+            int i = 0;
+            try {
+                j = jsonObject.getJSONObject("Match2402");
+                i = j.getInt("matchId");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            TextView testText = new TextView(getActivity());
+            testText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            testText.setText(Integer.toString(i));
+            final LinearLayout l = linearLayoutReference.get();
+            l.addView(testText);
+        }
+
+    }
+
+    public void displayNextMatches(LinearLayout linearLayout) {
 
         ImageView teamOneImage = new ImageView(getActivity());
         ImageView teamTwoImage = new ImageView(getActivity());
@@ -93,6 +154,7 @@ public class MainPageFragment extends Fragment {
 
         linearLayout.addView(teamOneImage);
         linearLayout.addView(teamTwoImage);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

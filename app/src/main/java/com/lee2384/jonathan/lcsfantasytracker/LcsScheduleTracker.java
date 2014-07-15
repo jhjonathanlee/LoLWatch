@@ -1,5 +1,10 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.provider.ContactsContract;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Date;
@@ -9,12 +14,25 @@ import java.sql.Date;
  */
 public class LcsScheduleTracker implements SportsScheduleTracker {
 
-    public LcsScheduleTracker(Date start, Date end) {
+    private final String[] uri = {"http://na.lolesports.com/api/schedule.json?tournamentId=102", "http://na.lolesports.com/api/schedule.json?tournamentId=104" };
+    private final String naUri = "http://na.lolesports.com/api/schedule.json?tournamentId=104";
+
+    private JSONObject scheduleArray[] = new JSONObject[2];
+
+    public LcsScheduleTracker() {
         setUp();
     }
 
-    private JSONObject setUp() {
-        return null;
+    private void setUp() {
+
+        //scheduleArray[1] = retriever.getJsonFromUri(naUri);
+
+    }
+
+    public String getMatchTest() {
+        String matches="default";
+
+        return matches;
     }
 
     // return the season's schedule
