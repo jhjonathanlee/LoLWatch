@@ -3,20 +3,42 @@ package com.lee2384.jonathan.lcsfantasytracker;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+
+import java.util.List;
 
 // random comment
 public class MainActivity extends Activity
-    implements MainPageFragment.OnFragmentInteractionListener {
+    implements LoaderManager.LoaderCallbacks<List<LcsMatch>>,
+    ScheduleListFragment.OnFragmentInteractionListener {
+
+    LcsScheduleAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        ConnectivityManager connMngr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
+
+        mAdapter = new LcsScheduleAdapter(this, android.R.layout.simple_list_item_1, null);
+
+        if (networkInfo != null && networkInfo.isConnected() ) {
+            // preparing schedule loader
+            getLoaderManager().initLoader(0, null, this);
+
+        }
 
         if (findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null) {
@@ -25,7 +47,8 @@ public class MainActivity extends Activity
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            MainPageFragment mpFragment = new MainPageFragment();
+            //LcsScheduleFragment mpFragment = new LcsScheduleFragment();
+            ScheduleListFragment mpFragment = ScheduleListFragment.newInstance(mAdapter);
             fragmentTransaction.add(R.id.fragment_container, mpFragment);
             fragmentTransaction.commit();
         }
@@ -50,7 +73,21 @@ public class MainActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onFragmentInteraction(Uri uri) {
-        // do nothing
+    @Override
+    public Loader<List<LcsMatch>> onCreateLoader(int id, Bundle args) {
+        return new ScheduleLoader(this);
+    }
+
+    public void onLoadFinished(Loader<List<LcsMatch>> loader, List<LcsMatch> data) {
+        mAdapter.setData(data);
+    }
+
+    public void onLoaderReset(Loader<List<LcsMatch>> loader) {
+        mAdapter.setData(null);
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+        // do something
     }
 }

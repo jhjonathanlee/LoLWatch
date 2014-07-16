@@ -88,15 +88,6 @@ public class MainPageFragment extends Fragment {
         // get context
         Context context = getActivity().getApplicationContext();
 
-        ConnectivityManager connMngr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
-
-        if (networkInfo != null && networkInfo.isConnected() ) {
-            final LinearLayout testL = (LinearLayout) v.findViewById(R.id.main_page_linear2);
-            new GetScheduleTask(testL).execute();
-
-        }
-
         // Inflate the layout for this fragment
         return v;
     }

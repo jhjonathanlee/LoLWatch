@@ -5,9 +5,5 @@ package com.lee2384.jonathan.lcsfantasytracker;
  */
 public interface Team {
 
-    public void returnRoster();
 
-    public void addPlayer(Player player);
-
-    public void removePlayer(Player player);
 }
