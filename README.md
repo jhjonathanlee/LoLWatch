@@ -1,4 +1,4 @@
-LCS schedule and points tracker
 
-checkout na.lolesports.com for Riot's official website
+LCS schedule and points tracker. All data is from na.lolesports.com.
+
 ======
