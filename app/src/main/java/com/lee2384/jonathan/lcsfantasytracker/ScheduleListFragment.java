@@ -87,12 +87,13 @@ public class ScheduleListFragment extends Fragment implements AbsListView.OnItem
         // Set the adapter  //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
+        /*
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+*/
         mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
