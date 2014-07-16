@@ -84,9 +84,15 @@ public class ScheduleListFragment extends Fragment implements AbsListView.OnItem
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedulelist, container, false);
 
-        // Set the adapter
+        // Set the adapter  //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks

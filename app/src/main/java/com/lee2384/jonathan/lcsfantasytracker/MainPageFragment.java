@@ -120,7 +120,7 @@ public class MainPageFragment extends Fragment {
                 j = jsonObject.getJSONObject("Match2402");
                 i = j.getInt("matchId");
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
             TextView testText = new TextView(getActivity());

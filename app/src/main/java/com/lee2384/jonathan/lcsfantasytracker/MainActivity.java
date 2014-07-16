@@ -32,7 +32,7 @@ public class MainActivity extends Activity
         ConnectivityManager connMngr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
 
-        mAdapter = new LcsScheduleAdapter(this, android.R.layout.simple_list_item_1, null);
+        mAdapter = new LcsScheduleAdapter(this, android.R.layout.simple_list_item_1, new java.util.ArrayList<LcsMatch>());
 
         if (networkInfo != null && networkInfo.isConnected() ) {
             // preparing schedule loader
@@ -78,12 +78,15 @@ public class MainActivity extends Activity
         return new ScheduleLoader(this);
     }
 
+    @Override
     public void onLoadFinished(Loader<List<LcsMatch>> loader, List<LcsMatch> data) {
         mAdapter.setData(data);
     }
 
+    @Override
     public void onLoaderReset(Loader<List<LcsMatch>> loader) {
-        mAdapter.setData(null);
+        //mAdapter.setData(null);
+        mAdapter.clear();
     }
 
     @Override

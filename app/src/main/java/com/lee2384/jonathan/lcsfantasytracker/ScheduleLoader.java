@@ -50,8 +50,8 @@ public class ScheduleLoader extends AsyncTaskLoader<List<LcsMatch>> {
 
                 try {
                     jMatch = temp.getJSONObject(matchName);
-                    match = new LcsMatch(temp.getString(KEY_NAME), temp.getString(KEY_DATETIME),
-                            temp.getJSONObject(KEY_TOURNEY).getInt(KEY_ROUND));
+                    match = new LcsMatch(jMatch.getString(KEY_NAME), jMatch.getString(KEY_DATETIME),
+                            jMatch.getJSONObject(KEY_TOURNEY).getInt(KEY_ROUND));
 
                     tempList.add(match);
 
@@ -92,6 +92,10 @@ public class ScheduleLoader extends AsyncTaskLoader<List<LcsMatch>> {
         if(scheduleList != null) {
             // if result is available, deliver immediately
             deliverResult(scheduleList);
+        }
+
+        if(takeContentChanged() || scheduleList == null) {
+            forceLoad();
         }
     }
 

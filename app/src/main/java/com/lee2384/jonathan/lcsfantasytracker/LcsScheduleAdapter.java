@@ -14,26 +14,26 @@ import java.util.List;
  */
 public class LcsScheduleAdapter extends ArrayAdapter<LcsMatch> implements Serializable {
 
-    private final Context context;
-    private final List<LcsMatch> matches;
-    private final int resId;
+    //private final Context context;
+    //private final List<LcsMatch> matches;
+    //private final int resId;
 
     public LcsScheduleAdapter(Context context, int resource, List<LcsMatch> objects) {
         super(context, resource, objects);
-        this.context = context;
-        this.matches = objects;
-        this.resId = resource;
+        //this.context = context;
+        //this.matches = objects;
+        //this.resId = resource;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if(convertView == null) {
-            convertView = new TextView(context);
-            parent.addView(convertView);
+            convertView = new TextView(getContext());
+            //parent.addView(convertView);
         }
 
-        ((TextView) convertView).setText(matches.get(position).getName());
+        ((TextView) convertView).setText(getItem(position).getName());
 
         return convertView;
     }
