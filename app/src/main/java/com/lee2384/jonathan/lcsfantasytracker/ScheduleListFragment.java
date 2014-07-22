@@ -1,6 +1,10 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +14,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
@@ -24,10 +29,12 @@ import com.lee2384.jonathan.lcsfantasytracker.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ScheduleListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener {
+public class ScheduleListFragment extends android.support.v4.app.Fragment
+        implements AbsListView.OnItemClickListener,
+        android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String KEY = "key";
+    private static final String KEY_INTEGER = "integer";
 
     private String mParam1;
 
@@ -44,12 +51,13 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment implem
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private LcsScheduleAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
+    private int round;
 
-    public static ScheduleListFragment newInstance(LcsScheduleAdapter mAdapter) {
+    public static ScheduleListFragment newInstance(int i) {
         ScheduleListFragment fragment = new ScheduleListFragment();
         Bundle args = new Bundle();
-        args.putSerializable(KEY, mAdapter);
+        args.putInt(KEY_INTEGER, i);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,11 +73,13 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment implem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         if (getArguments() != null) {
-            mAdapter = (LcsScheduleAdapter) getArguments().getSerializable(KEY);
+            round = (Integer) getArguments().getInt(KEY_INTEGER);
         }
 
-        getLoaderManager().getLoader(0);
+        getLoaderManager().initLoader(round, null, this);
+
     }
 
     @Override
@@ -80,13 +90,9 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment implem
         // Set the adapter  //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
 
-        /*
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-*/
+
+        mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null,
+                new String[] {LcsMatchTable.COLUMN_NAME}, new int[] {android.R.id.text1}, 0);
         mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
@@ -148,6 +154,32 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment implem
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+    }
+
+    /**
+     * Loader methods
+     */
+
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        String[] projection = LcsMatchTable.allCol;
+        String selection = LcsMatchTable.COLUMN_ROUND + "=" + id;
+
+        return new LcsMatchCursorLoader(getActivity(), projection, selection);
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader loader, Cursor data) {
+
+        //Cursor data = (Cursor) o;
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader loader) {
+        mAdapter.swapCursor(null);
+
     }
 
 }

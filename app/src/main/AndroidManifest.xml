@@ -24,11 +24,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".DatabaseIntentService" />
-        <service
-            android:name=".TestIntentService"
-            android:exported="false" >
-        </service>
+        <service android:name=".PopulateDbIntentService" />
     </application>
 
 </manifest>
