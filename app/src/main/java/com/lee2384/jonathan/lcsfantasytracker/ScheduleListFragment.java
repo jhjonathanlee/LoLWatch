@@ -93,6 +93,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
 
         mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null,
                 new String[] {LcsMatchTable.COLUMN_NAME}, new int[] {android.R.id.text1}, 0);
+
         mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
@@ -164,7 +165,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         String[] projection = LcsMatchTable.allCol;
-        String selection = LcsMatchTable.COLUMN_ROUND + "=" + id;
+        String selection = LcsMatchTable.COLUMN_ROUND + "=" + (id+1);
 
         return new LcsMatchCursorLoader(getActivity(), projection, selection);
     }

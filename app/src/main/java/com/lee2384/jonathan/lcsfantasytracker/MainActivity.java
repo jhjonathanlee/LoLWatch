@@ -36,9 +36,9 @@ public class MainActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG, "right before service starts");
-        Intent intent = new Intent(this, PopulateDbIntentService.class);
-        startService(intent);
+        //Log.d(TAG, "right before service starts");
+        //Intent intent = new Intent(this, PopulateDbIntentService.class);
+        //startService(intent);
 
         viewPager=(ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(

@@ -26,6 +26,7 @@ public class LcsMatchTable {
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
+        Log.d("LcsMatchTable", "database created");
     }
 
     public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {

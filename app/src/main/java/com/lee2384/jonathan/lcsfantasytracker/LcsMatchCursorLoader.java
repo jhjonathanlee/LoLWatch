@@ -4,6 +4,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * Created by Jonathan on 7/22/2014.
@@ -29,21 +30,31 @@ public class LcsMatchCursorLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public Cursor loadInBackground() {
-
+        /*
         try {
             Thread.sleep(12000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
         dbHelper = new LcsMatchDatabaseHelper(getContext());
         database = dbHelper.getWritableDatabase();
 
+
         Cursor cursor = database.query(false, LcsMatchTable.TABLE_MATCH, projection,
                 selection, null, null, null, null, null);
+
+       /* Cursor cursor;
+        cursor = database.query(LcsMatchTable.TABLE_MATCH, LcsMatchTable.allCol,
+                null, null, null, null, null);*/
+
         if (cursor != null) {
             cursor.moveToFirst();
         }
+
+        Log.d(getClass().toString(), Integer.toString(cursor.getCount()));
+
+        dbHelper.close();
         return cursor;
     }
 

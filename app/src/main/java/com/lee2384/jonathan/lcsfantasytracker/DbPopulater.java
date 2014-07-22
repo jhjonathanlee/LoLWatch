@@ -1,10 +1,9 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
-import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -18,10 +17,9 @@ import java.util.Iterator;
 /**
  * Created by Jonathan on 7/22/2014.
  */
-public class PopulateDbIntentService extends IntentService {
+public class DbPopulater {
 
-
-    private static final String TAG = "db service";
+    private static final String TAG = "db populator";
     //private SQLiteDatabase database;
 
     private String[] scheduleUri = {"http://na.lolesports.com/api/schedule.json?tournamentId=102",
@@ -31,43 +29,52 @@ public class PopulateDbIntentService extends IntentService {
     private final String KEY_ROUND = "round";
     private final String KEY_NAME = "name";
     //private final String KEY_DATETIME = "dateTime";
+    private Context context;
 
-    public PopulateDbIntentService() {
-        super("PopulateDbIntentService");
+    public DbPopulater(Context context) {
+       this.context = context;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        //MainActivity.setCheck();
-        try {
-            populateDb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void populateDb(SQLiteDatabase database) {
 
-        stopSelf();
-    }
-
-    private void populateDb() throws SQLException {
-        LcsMatchDatabaseHelper dbHelper = new LcsMatchDatabaseHelper(this);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+       // LcsMatchDatabaseHelper dbHelper = new LcsMatchDatabaseHelper(context);
+        //SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         // now open the connection
-        ConnectivityManager connMngr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMngr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
 
         // load lcs data
         if (networkInfo != null && networkInfo.isConnected() ) {
+
             JsonRetriever jsonRetriever = new JsonRetriever();
 
             JSONObject temp;
             Log.d(TAG, "begin transaction");
-            database.beginTransaction();
 
+            long startTime = System.currentTimeMillis();
+
+            database.beginTransaction();
             // pulls schedule jsons from na.lolesports.com
             for(int i=0; i<scheduleUri.length; i++) {
+
+                SQLiteStatement statement;
+                String sql = "INSERT INTO "+LcsMatchTable.TABLE_MATCH+
+                        " " + "(" +
+                        LcsMatchTable.COLUMN_NAME + ", " +
+                        LcsMatchTable.COLUMN_ROUND + ")" +
+                        " VALUES (?, ?)";
+
+                statement = database.compileStatement(sql);
+                statement.clearBindings();
+
+                long downloadStart = System.currentTimeMillis();
                 temp = jsonRetriever.getJsonFromUri(scheduleUri[i]);
+                long downloadTime = System.currentTimeMillis() - downloadStart;
+                Log.d(TAG, Long.toString(downloadTime));
+
                 Iterator<String> keys = temp.keys();
+
                 while(keys.hasNext()) {
                     String matchName = keys.next();
                     JSONObject jMatch;
@@ -75,11 +82,16 @@ public class PopulateDbIntentService extends IntentService {
                     try {
                         jMatch = temp.getJSONObject(matchName);
 
+                        /*
                         ContentValues initialValues = new ContentValues();
                         initialValues.put(LcsMatchTable.COLUMN_NAME, jMatch.getString(KEY_NAME));
                         initialValues.put(LcsMatchTable.COLUMN_ROUND, jMatch.getJSONObject(KEY_TOURNEY).getInt(KEY_ROUND));
+                        */
 
-                        database.insert(LcsMatchTable.TABLE_MATCH, null, initialValues);
+                        // database.insert(LcsMatchTable.TABLE_MATCH, null, initialValues);
+                        statement.bindString(1, jMatch.getString(KEY_NAME));
+                        statement.bindLong(2, jMatch.getJSONObject(KEY_TOURNEY).getInt(KEY_ROUND));
+                        statement.executeInsert();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -87,10 +99,15 @@ public class PopulateDbIntentService extends IntentService {
                 }
             }
 
+            database.setTransactionSuccessful();
             database.endTransaction();
 
+            long diff = System.currentTimeMillis() - startTime;
+
             Log.d(TAG, "finished transaction");
-            MainActivity.setCheck();
+            Log.d(TAG, "total time: " + diff);
+            //MainActivity.setCheck();
+            //dbHelper.close();
         }
     }
 }
