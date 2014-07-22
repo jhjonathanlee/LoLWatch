@@ -1,45 +1,53 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.List;
 
 // random comment
-public class MainActivity extends Activity
+public class MainActivity extends FragmentActivity
     implements LoaderManager.LoaderCallbacks<List<LcsMatch>>,
     ScheduleListFragment.OnFragmentInteractionListener {
 
-    LcsScheduleAdapter mAdapter;
+    private LcsScheduleAdapter mAdapter;
+    private ViewPager viewPager=null;
+
+    private android.support.v4.app.FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ConnectivityManager connMngr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
 
         mAdapter = new LcsScheduleAdapter(this, android.R.layout.simple_list_item_1, new java.util.ArrayList<LcsMatch>());
 
+        // load lcs data
         if (networkInfo != null && networkInfo.isConnected() ) {
             // preparing schedule loader
             getLoaderManager().initLoader(0, null, this);
 
         }
 
+        viewPager=(ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(
+                new MyAdapter(
+                        getSupportFragmentManager()));
+
+        /*
         if (findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null) {
                 return;
@@ -51,7 +59,7 @@ public class MainActivity extends Activity
             ScheduleListFragment mpFragment = ScheduleListFragment.newInstance(mAdapter);
             fragmentTransaction.add(R.id.fragment_container, mpFragment);
             fragmentTransaction.commit();
-        }
+        }*/
     }
 
     @Override
@@ -92,5 +100,28 @@ public class MainActivity extends Activity
     @Override
     public void onFragmentInteraction(String id) {
         // do something
+    }
+
+    class MyAdapter extends FragmentStatePagerAdapter {
+
+        public MyAdapter(android.support.v4.app.FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return ScheduleListFragment.newInstance(mAdapter);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int i) {
+            return ("Week " + (i+1));
+        }
+
+        @Override
+        public int getCount() {
+            return 11;
+        }
+
     }
 }

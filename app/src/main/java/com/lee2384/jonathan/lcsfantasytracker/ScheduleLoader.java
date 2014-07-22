@@ -55,7 +55,6 @@ public class ScheduleLoader extends AsyncTaskLoader<List<LcsMatch>> {
 
                     tempList.add(match);
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

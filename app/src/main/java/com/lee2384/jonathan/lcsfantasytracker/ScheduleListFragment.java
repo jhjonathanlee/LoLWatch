@@ -24,13 +24,11 @@ import com.lee2384.jonathan.lcsfantasytracker.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ScheduleListFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class ScheduleListFragment extends android.support.v4.app.Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String KEY = "key";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
 
     //private LcsScheduleAdapter mAdapter;
@@ -48,7 +46,6 @@ public class ScheduleListFragment extends Fragment implements AbsListView.OnItem
      */
     private LcsScheduleAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
     public static ScheduleListFragment newInstance(LcsScheduleAdapter mAdapter) {
         ScheduleListFragment fragment = new ScheduleListFragment();
         Bundle args = new Bundle();
@@ -72,10 +69,6 @@ public class ScheduleListFragment extends Fragment implements AbsListView.OnItem
             mAdapter = (LcsScheduleAdapter) getArguments().getSerializable(KEY);
         }
 
-        /*
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);*/
         getLoaderManager().getLoader(0);
     }
 
