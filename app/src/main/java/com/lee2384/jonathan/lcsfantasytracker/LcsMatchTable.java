@@ -13,6 +13,10 @@ public class LcsMatchTable {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ROUND = "round";
+    public static final String COLUMN_DATETIME = "dateTime";
+    public static final String COLUMN_WINNER_ID = "winnerId";
+    public static final String COLUMN_TEAM_ONE = "teamOne";
+    public static final String COLUMN_TEAM_TWO = "teamTwo";
     public static final String[] allCol = { COLUMN_ID, COLUMN_NAME, COLUMN_ROUND };
 
     // Database creation SQL statement
@@ -21,7 +25,11 @@ public class LcsMatchTable {
             + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_NAME + " text not null, "
-            + COLUMN_ROUND + " text not null"
+            + COLUMN_ROUND + " integer, "
+            + COLUMN_DATETIME + " text not null, "
+            + COLUMN_WINNER_ID + " integer, "
+            + COLUMN_TEAM_ONE + " text not null, "
+            + COLUMN_TEAM_TWO + " text not null"
             + ");";
 
     public static void onCreate(SQLiteDatabase database) {

@@ -73,7 +73,6 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         if (getArguments() != null) {
             round = (Integer) getArguments().getInt(KEY_INTEGER);
         }

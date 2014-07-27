@@ -25,9 +25,22 @@ public class DbPopulater {
     private String[] scheduleUri = {"http://na.lolesports.com/api/schedule.json?tournamentId=102",
             "http://na.lolesports.com/api/schedule.json?tournamentId=104" };
 
-    private final String KEY_TOURNEY = "tournament";
-    private final String KEY_ROUND = "round";
-    private final String KEY_NAME = "name";
+    // json names in Match object
+    private final String NAME_TOURNEY = "tournament";
+    private final String NAME_ROUND = "round";
+    private final String NAME_NAME = "name";
+    private final String NAME_DATETIME = "dateTime";
+    private final String NAME_WINNER_ID = "winnerId";
+    private final String NAME_CONTESTANTS = "contestants";
+
+    // nested object 'contestants' in json
+    private final String NAME_BLUE = "blue";
+    private final String NAME_RED = "red";
+
+    // nested names in blue/red
+    private final String NAME_ID = "id";
+    private final String NAME_TEAM_NAME = "name";
+
     //private final String KEY_DATETIME = "dateTime";
     private Context context;
 
@@ -41,7 +54,8 @@ public class DbPopulater {
         //SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         // now open the connection
-        ConnectivityManager connMngr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMngr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMngr.getActiveNetworkInfo();
 
         // load lcs data
@@ -60,10 +74,14 @@ public class DbPopulater {
 
                 SQLiteStatement statement;
                 String sql = "INSERT INTO "+LcsMatchTable.TABLE_MATCH+
-                        " " + "(" +
+                        " (" +
                         LcsMatchTable.COLUMN_NAME + ", " +
-                        LcsMatchTable.COLUMN_ROUND + ")" +
-                        " VALUES (?, ?)";
+                        LcsMatchTable.COLUMN_ROUND +  ", " +
+                        LcsMatchTable.COLUMN_DATETIME + ", " +
+                        LcsMatchTable.COLUMN_WINNER_ID + ", " +
+                        LcsMatchTable.COLUMN_TEAM_ONE + ", " +
+                        LcsMatchTable.COLUMN_TEAM_TWO +
+                        ") VALUES (?, ?, ?, ?, ?, ?)";
 
                 statement = database.compileStatement(sql);
                 statement.clearBindings();
@@ -89,8 +107,16 @@ public class DbPopulater {
                         */
 
                         // database.insert(LcsMatchTable.TABLE_MATCH, null, initialValues);
-                        statement.bindString(1, jMatch.getString(KEY_NAME));
-                        statement.bindLong(2, jMatch.getJSONObject(KEY_TOURNEY).getInt(KEY_ROUND));
+                        statement.bindString(1, jMatch.getString(NAME_NAME));
+                        statement.bindLong(2, jMatch.getJSONObject(NAME_TOURNEY).getInt(NAME_ROUND));
+                        statement.bindString(3, jMatch.getString(NAME_DATETIME));
+                        statement.bindLong(4, jMatch.getInt(NAME_WINNER_ID));
+                        statement.bindString(5,
+                                jMatch.getJSONObject(NAME_CONTESTANTS)
+                                        .getJSONObject(NAME_BLUE).getString(NAME_TEAM_NAME));
+                        statement.bindString(6,
+                                jMatch.getJSONObject(NAME_CONTESTANTS)
+                                        .getJSONObject(NAME_RED).getString(NAME_TEAM_NAME));
                         statement.executeInsert();
 
                     } catch (JSONException e) {
