@@ -17,15 +17,19 @@ public class LcsMatchCursorLoader extends AsyncTaskLoader<Cursor> {
     private String selection;
     private SQLiteDatabase database;
     private LcsMatchDatabaseHelper dbHelper;
+    private boolean distinct;
+    private String groupBy;
 
     public LcsMatchCursorLoader(Context context) {
         super(context);
     }
 
-    public LcsMatchCursorLoader(Context context, String[] projection, String selection) {
+    public LcsMatchCursorLoader(Context context, String[] projection, String selection, boolean distinct, String groupBy) {
         super(context);
         this.projection = projection;
         this.selection = selection;
+        this.distinct = distinct;
+        this.groupBy = groupBy;
     }
 
     @Override
@@ -40,9 +44,9 @@ public class LcsMatchCursorLoader extends AsyncTaskLoader<Cursor> {
         dbHelper = new LcsMatchDatabaseHelper(getContext());
         database = dbHelper.getWritableDatabase();
 
-
-        Cursor cursor = database.query(false, LcsMatchTable.TABLE_MATCH, projection,
-                selection, null, null, null, null, null);
+        Log.d(getClass().getSimpleName().toString(), "selection: " + selection.toString());
+        Cursor cursor = database.query(this.distinct, LcsMatchTable.TABLE_MATCH, projection,
+                selection, null, groupBy, null, null, null);
 
        /* Cursor cursor;
         cursor = database.query(LcsMatchTable.TABLE_MATCH, LcsMatchTable.allCol,
@@ -52,7 +56,7 @@ public class LcsMatchCursorLoader extends AsyncTaskLoader<Cursor> {
             cursor.moveToFirst();
         }
 
-        Log.d(getClass().toString(), Integer.toString(cursor.getCount()));
+        Log.d(getClass().toString(), "getCount: " + Integer.toString(cursor.getCount()));
 
         dbHelper.close();
         return cursor;

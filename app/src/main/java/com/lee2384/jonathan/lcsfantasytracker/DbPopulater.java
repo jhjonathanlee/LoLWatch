@@ -77,11 +77,12 @@ public class DbPopulater {
                         " (" +
                         LcsMatchTable.COLUMN_NAME + ", " +
                         LcsMatchTable.COLUMN_ROUND +  ", " +
-                        LcsMatchTable.COLUMN_DATETIME + ", " +
+                        LcsMatchTable.COLUMN_DATE + ", " +
+                        LcsMatchTable.COLUMN_TIME + ", " +
                         LcsMatchTable.COLUMN_WINNER_ID + ", " +
                         LcsMatchTable.COLUMN_TEAM_ONE + ", " +
                         LcsMatchTable.COLUMN_TEAM_TWO +
-                        ") VALUES (?, ?, ?, ?, ?, ?)";
+                        ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
                 statement = database.compileStatement(sql);
                 statement.clearBindings();
@@ -109,12 +110,16 @@ public class DbPopulater {
                         // database.insert(LcsMatchTable.TABLE_MATCH, null, initialValues);
                         statement.bindString(1, jMatch.getString(NAME_NAME));
                         statement.bindLong(2, jMatch.getJSONObject(NAME_TOURNEY).getInt(NAME_ROUND));
-                        statement.bindString(3, jMatch.getString(NAME_DATETIME));
-                        statement.bindLong(4, jMatch.getInt(NAME_WINNER_ID));
-                        statement.bindString(5,
+                        // dateTime is stored on json as yyyy-mm-ddThh:mmZ
+                        String date = jMatch.getString(NAME_DATETIME);
+                        statement.bindString(3, date.substring(0,10));
+                        statement.bindString(4, date.substring(11,15));
+
+                        statement.bindLong(5, jMatch.getInt(NAME_WINNER_ID));
+                        statement.bindString(6,
                                 jMatch.getJSONObject(NAME_CONTESTANTS)
                                         .getJSONObject(NAME_BLUE).getString(NAME_TEAM_NAME));
-                        statement.bindString(6,
+                        statement.bindString(7,
                                 jMatch.getJSONObject(NAME_CONTESTANTS)
                                         .getJSONObject(NAME_RED).getString(NAME_TEAM_NAME));
                         statement.executeInsert();
