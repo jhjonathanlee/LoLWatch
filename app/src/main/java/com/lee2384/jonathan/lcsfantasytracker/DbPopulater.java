@@ -113,9 +113,9 @@ public class DbPopulater {
                         // dateTime is stored on json as yyyy-mm-ddThh:mmZ
                         String date = jMatch.getString(NAME_DATETIME);
                         statement.bindString(3, date.substring(0,10));
-                        statement.bindString(4, date.substring(11,15));
+                        statement.bindString(4, date.substring(11,16));
 
-                        statement.bindLong(5, jMatch.getInt(NAME_WINNER_ID));
+                        statement.bindString(5, jMatch.getString(NAME_WINNER_ID));
                         statement.bindString(6,
                                 jMatch.getJSONObject(NAME_CONTESTANTS)
                                         .getJSONObject(NAME_BLUE).getString(NAME_TEAM_NAME));

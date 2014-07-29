@@ -2,6 +2,7 @@ package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -113,7 +114,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
 
         //mListView.setAdapter(mAdapter);
 
-        tAdapter = new MyCursorTreeAdapter(getActivity(), null,
+        tAdapter = new MySimpleCursorTreeAdapter(getActivity(), null,
                 android.R.layout.simple_expandable_list_item_1,
                 new String[] {LcsMatchTable.COLUMN_DATE},
                 new int[] { android.R.id.text1 },
@@ -232,7 +233,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
         } else {
             // groupCursor
             tAdapter.setGroupCursor(data);
-
+            /*
             Cursor groupCursor = tAdapter.getCursor();
             groupCursor.moveToFirst();
             Log.d(LOG_KEY, Integer.toString(groupCursor.getCount()));
@@ -248,7 +249,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
                 dateList.add(i, groupCursor.getString(colDateIndex));
                 groupCursor.moveToNext();
             }
-            Log.d(LOG_KEY, "exit loader call loop");
+            Log.d(LOG_KEY, "exit loader call loop");*/
         }
 
         //Cursor data = (Cursor) o;
@@ -268,6 +269,40 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
             tAdapter.setGroupCursor(null);
         }
 
+    }
+
+    private class MySimpleCursorTreeAdapter extends SimpleCursorTreeAdapter {
+        public MySimpleCursorTreeAdapter(Context context, Cursor cursor, int groupLayout, String[] groupFrom, int[] groupTo, int childLayout, String[] childFrom, int[] childTo) {
+            super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childFrom, childTo);
+        }
+
+        public MySimpleCursorTreeAdapter(Context context, Cursor cursor, int collapsedGroupLayout, int expandedGroupLayout, String[] groupFrom, int[] groupTo, int childLayout, int lastChildLayout, String[] childFrom, int[] childTo) {
+            super(context, cursor, collapsedGroupLayout, expandedGroupLayout, groupFrom, groupTo, childLayout, lastChildLayout, childFrom, childTo);
+        }
+
+        public MySimpleCursorTreeAdapter(Context context, Cursor cursor, int collapsedGroupLayout, int expandedGroupLayout, String[] groupFrom, int[] groupTo, int childLayout, String[] childFrom, int[] childTo) {
+            super(context, cursor, collapsedGroupLayout, expandedGroupLayout, groupFrom, groupTo, childLayout, childFrom, childTo);
+        }
+
+        @Override
+        protected Cursor getChildrenCursor(Cursor cursor) {
+            // Log.d(getClass().getSimpleName().toString(), "getChildrenCursor");
+
+            android.support.v4.content.Loader<Cursor> loader = getLoaderManager().getLoader(cursor.getPosition());
+            Bundle args = new Bundle();
+            int colDateIndex = cursor.getColumnIndex(LcsMatchTable.COLUMN_DATE);
+            //Log.d(LOG_KEY, Integer.toString(colDateIndex));
+            //Log.d(LOG_KEY, cursor.getString(colDateIndex));
+            args.putString(KEY_DATE,
+                    cursor.getString(colDateIndex));
+            if(loader != null && !loader.isReset()) {
+                getLoaderManager().restartLoader(cursor.getPosition(), args, ScheduleListFragment.this);
+            } else {
+                getLoaderManager().initLoader(cursor.getPosition(), args, ScheduleListFragment.this);
+            }
+
+            return null;
+        }
     }
 
 }
