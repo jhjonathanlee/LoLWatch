@@ -118,14 +118,14 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
                 android.R.layout.simple_expandable_list_item_1,
                 new String[] {LcsMatchTable.COLUMN_DATE},
                 new int[] { android.R.id.text1 },
-                android.R.layout.simple_list_item_1,
-                new String[] {LcsMatchTable.COLUMN_NAME },
+                R.layout.match_linear,
+                new String[] { LcsMatchTable.COLUMN_NAME },
                 new int[] { android.R.id.text1});
 
         mListView.setAdapter(tAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
-       // mListView.setOnItemClickListener(this);
+        // mListView.setOnItemClickListener(this);
 
         return view;
     }
@@ -263,11 +263,24 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
         if (id > -1) {
             // child cursor
             //Log.d(LOG_KEY, "cursor closed");
-            tAdapter.setChildrenCursor(id, null);
+            try {
+                tAdapter.setChildrenCursor(id, null);
+            } catch (NullPointerException e) {
+                // no child cursor...
+                Log.d(LOG_KEY, "no child cursor");
+                e.printStackTrace();
+            }
+
         } else {
             // group cursor
             tAdapter.setGroupCursor(null);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(LOG_KEY, round + " fragment destroyed");
+        super.onDestroy();
 
     }
 
@@ -285,10 +298,18 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
         }
 
         @Override
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            convertView = super.getGroupView(groupPosition, isExpanded, convertView, parent);
+            ( (ExpandableListView) parent).expandGroup(groupPosition);
+            return convertView;
+        }
+
+        @Override
         protected Cursor getChildrenCursor(Cursor cursor) {
             // Log.d(getClass().getSimpleName().toString(), "getChildrenCursor");
 
             android.support.v4.content.Loader<Cursor> loader = getLoaderManager().getLoader(cursor.getPosition());
+            // Bundles the DATE of the group cursor for db query SELECT statement
             Bundle args = new Bundle();
             int colDateIndex = cursor.getColumnIndex(LcsMatchTable.COLUMN_DATE);
             //Log.d(LOG_KEY, Integer.toString(colDateIndex));
