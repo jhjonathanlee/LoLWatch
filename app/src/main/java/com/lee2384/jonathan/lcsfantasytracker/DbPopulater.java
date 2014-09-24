@@ -1,17 +1,17 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.lee2384.jonathan.lcsfantasytracker.dbtables.LcsMatchTable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
@@ -61,7 +61,7 @@ public class DbPopulater {
         // load lcs data
         if (networkInfo != null && networkInfo.isConnected() ) {
 
-            JsonRetriever jsonRetriever = new JsonRetriever();
+            //JsonRetriever jsonRetriever = new JsonRetriever();
 
             JSONObject temp;
             Log.d(TAG, "begin transaction");
@@ -73,7 +73,7 @@ public class DbPopulater {
             for(int i=0; i<scheduleUri.length; i++) {
 
                 SQLiteStatement statement;
-                String sql = "INSERT INTO "+LcsMatchTable.TABLE_MATCH+
+                String sql = "INSERT INTO "+ LcsMatchTable.TABLE_NAME+
                         " (" +
                         LcsMatchTable.COLUMN_NAME + ", " +
                         LcsMatchTable.COLUMN_ROUND +  ", " +
@@ -88,7 +88,7 @@ public class DbPopulater {
                 statement.clearBindings();
 
                 long downloadStart = System.currentTimeMillis();
-                temp = jsonRetriever.getJsonFromUri(scheduleUri[i]);
+                temp = JsonRetriever.getJsonFromUri(scheduleUri[i]);
                 long downloadTime = System.currentTimeMillis() - downloadStart;
                 Log.d(TAG, Long.toString(downloadTime));
 

@@ -29,7 +29,8 @@ public class JsonRetriever{
     // empty constructor
     public JsonRetriever() {}
 
-    public JSONObject getJsonFromUri(String uri) {
+    // cannot be called from UI thread
+    public static JSONObject getJsonFromUri(String uri) {
 
         InputStream inputStream = null;
         String result = "";

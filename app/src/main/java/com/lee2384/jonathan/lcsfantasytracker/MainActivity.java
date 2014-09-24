@@ -18,12 +18,7 @@ import android.view.MenuItem;
 public class MainActivity extends FragmentActivity implements
     ScheduleListFragment.OnFragmentInteractionListener {
 
-    public static boolean serviceCheck = false;
-
-    public static void setCheck() {
-        serviceCheck = true;
-        Log.d(TAG, "setCheck");
-    }
+    //public static boolean serviceCheck = false;
 
     private static final String TAG = "MainActivity";
 

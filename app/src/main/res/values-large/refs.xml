@@ -8,6 +8,6 @@
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
-    <item name="fragment_schedulelist" type="layout">@layout/fragment_schedulelist_grid</item>
+    <item name="fragment_schedulelist" type="layout">@layout/fragment_schedulelist_list</item>
 
 </resources>

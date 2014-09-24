@@ -1,29 +1,19 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorTreeAdapter;
 import android.widget.TextView;
 
 
-import com.lee2384.jonathan.lcsfantasytracker.dummy.DummyContent;
+import com.lee2384.jonathan.lcsfantasytracker.dbtables.LcsMatchTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +104,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
 
         //mListView.setAdapter(mAdapter);
 
+        // for imageviews, provide filename
         tAdapter = new MySimpleCursorTreeAdapter(getActivity(), null,
                 android.R.layout.simple_expandable_list_item_1,
                 new String[] {LcsMatchTable.COLUMN_DATE},
@@ -200,7 +191,7 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
             // child view
             String date = "\"" + args.getString(KEY_DATE) + "\"";
             //Log.d(LOG_KEY, "DATE TEST: " + date);
-            projection = new String[] { LcsMatchTable.COLUMN_ID, LcsMatchTable.COLUMN_NAME, LcsMatchTable.COLUMN_DATE };
+            projection = new String[] { LcsMatchTable.COLUMN_ID, LcsMatchTable.COLUMN_NAME, LcsMatchTable.COLUMN_DATE, LcsMatchTable.COLUMN_TEAM_ONE };
             selection = LcsMatchTable.COLUMN_ROUND + "=" + (this.round) + " AND " + LcsMatchTable.COLUMN_DATE + "=" + date;
             //selection = LcsMatchTable.COLUMN_ROUND + "=" + this.round;
             //selection = LcsMatchTable.COLUMN_NAME + "=" + test;
@@ -296,14 +287,16 @@ public class ScheduleListFragment extends android.support.v4.app.Fragment
         public MySimpleCursorTreeAdapter(Context context, Cursor cursor, int collapsedGroupLayout, int expandedGroupLayout, String[] groupFrom, int[] groupTo, int childLayout, String[] childFrom, int[] childTo) {
             super(context, cursor, collapsedGroupLayout, expandedGroupLayout, groupFrom, groupTo, childLayout, childFrom, childTo);
         }
-
+/*
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             convertView = super.getGroupView(groupPosition, isExpanded, convertView, parent);
+
             ( (ExpandableListView) parent).expandGroup(groupPosition);
+
             return convertView;
         }
-
+*/
         @Override
         protected Cursor getChildrenCursor(Cursor cursor) {
             // Log.d(getClass().getSimpleName().toString(), "getChildrenCursor");

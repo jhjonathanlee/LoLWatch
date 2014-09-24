@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.lee2384.jonathan.lcsfantasytracker.dbtables.LcsMatchTable;
+
 /**
  * Created by Jonathan on 7/22/2014.
  */
@@ -45,7 +47,7 @@ public class LcsMatchCursorLoader extends AsyncTaskLoader<Cursor> {
         database = dbHelper.getWritableDatabase();
 
         Log.d(getClass().getSimpleName().toString(), "selection: " + selection.toString());
-        Cursor cursor = database.query(this.distinct, LcsMatchTable.TABLE_MATCH, projection,
+        Cursor cursor = database.query(this.distinct, LcsMatchTable.TABLE_NAME, projection,
                 selection, null, groupBy, null, null, null);
 
        /* Cursor cursor;

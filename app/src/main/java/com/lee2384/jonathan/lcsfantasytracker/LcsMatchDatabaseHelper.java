@@ -1,9 +1,11 @@
 package com.lee2384.jonathan.lcsfantasytracker;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.lee2384.jonathan.lcsfantasytracker.dbtables.LcsMatchTable;
+import com.lee2384.jonathan.lcsfantasytracker.dbtables.LcsTeamTable;
 
 /**
  * Created by Jonathan on 7/20/2014.
@@ -23,6 +25,8 @@ public class LcsMatchDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         LcsMatchTable.onCreate(database);
+        LcsTeamTable.onCreate(database);
+        // should be one time population of the DB
         DbPopulater dbPopulater = new DbPopulater(this.context);
         dbPopulater.populateDb(database);
     }
